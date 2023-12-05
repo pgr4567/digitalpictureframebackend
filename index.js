@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const formidable = require('formidable');
 const fs = require('fs');
-const path = require('path');
 const app = express();
 const port = 3001;
 
@@ -49,11 +48,10 @@ app.use('/addmedia', (req, res, next) => {
         next();
     });
 }, (req, res, next) => {
-    req.body = req.fields; // if needed
+    req.body = req.fields;
     next();
 });
 
-// File upload route
 app.post('/addmedia', async (req, res) => {
     if (!req.files || !req.files.image) {
         return res.status(400).json({ message: 'No file found' });
