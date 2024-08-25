@@ -4,6 +4,7 @@ const formidable = require('formidable');
 const fs = require('fs');
 const app = express();
 const port = 3001;
+const os = require('os');
 
 app.use(express.json());
 app.use(cors());
@@ -50,6 +51,20 @@ app.use('/addmedia', (req, res, next) => {
 }, (req, res, next) => {
     req.body = req.fields;
     next();
+});
+
+app.get('/ip', (req, res) => {
+    const ip = Object.values(Object.fromEntries(Object.entries(os.networkInterfaces()).filter(([key, value]) => !key.toLowerCase().includes("loopback"))))
+        .flat()
+        .reduce(
+            (result, networkInterface) =>
+            networkInterface?.family === "IPv4"
+                ? [...result, networkInterface.address]
+                : result,
+            []
+        )[0];
+    
+    res.status(200).send(ip);
 });
 
 app.post('/addmedia', async (req, res) => {
